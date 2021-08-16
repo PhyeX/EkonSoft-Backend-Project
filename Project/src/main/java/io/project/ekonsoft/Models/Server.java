@@ -35,7 +35,7 @@ public class Server {
     private String ip;
 
     @NotNull
-    private String panelAdress;
+    private String panelAddress;
 
     @ManyToOne
     @JsonIgnore

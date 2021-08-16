@@ -20,7 +20,7 @@ public class Server {
     private int id;
 
     @NotNull
-    private String name;
+    private String username;
 
     @NotNull
     private String password;

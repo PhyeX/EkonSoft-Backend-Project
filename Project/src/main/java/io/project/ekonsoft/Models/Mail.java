@@ -20,16 +20,10 @@ public class Mail {
     private int id;
 
     @NotNull
-    private String description;
-
-    @NotNull
-    private String address;
-
-    @NotNull
-    private String password;
-
-    @NotNull
     private String serverRegistration;
+
+    @NotNull
+    private String description;
 
     @ManyToOne
     @JsonIgnore

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/project/")
@@ -46,6 +47,33 @@ public class ProjectController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
+
+    @GetMapping("getAll/active")
+    public ResponseEntity<List<Project>> getAllActives() {
+        List<Project> projects = null;
+        try {
+            projects = projectRepository.findAll().stream().filter(Project::isActive).collect(Collectors.toList());
+            return new ResponseEntity<>(projects, HttpStatus.OK);
+        }
+        catch (Exception e){
+
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
+
+    @GetMapping("getAll/passive")
+    public ResponseEntity<List<Project>> getAllPassives() {
+        List<Project> projects = null;
+        try {
+            projects = projectRepository.findAll().stream().filter( i -> !i.isActive() ).collect(Collectors.toList());
+            return new ResponseEntity<>(projects, HttpStatus.OK);
+        }
+        catch (Exception e){
+
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
+
     @DeleteMapping("delete/{id}")
     public ResponseEntity<String> delete(@PathVariable int id) {
         try {
@@ -66,6 +94,25 @@ public class ProjectController {
             Project isThereAny = projectRepository.findById(id).orElse(null);
             if( isThereAny != null ) {
                 projectRepository.save(project);
+                return new ResponseEntity<>("Successful", HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>("Missing project id!", HttpStatus.BAD_REQUEST);
+            }
+        }
+        catch (Exception e){
+            return new ResponseEntity<>("Unsuccessful", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+
+    @PutMapping("changeActivity/{id}")
+    public ResponseEntity<String> updateActivity(@PathVariable int id) {
+        try {
+            Project project = projectRepository.findById(id).orElse(null);
+            if( project != null ) {
+                project.setActive(!project.isActive());
+                projectRepository.saveAndFlush(project);
                 return new ResponseEntity<>("Successful", HttpStatus.OK);
             }else{
                 return new ResponseEntity<>("Missing project id!", HttpStatus.BAD_REQUEST);

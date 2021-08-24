@@ -86,14 +86,16 @@ public class ProjectController {
         }
     }
 
-    @PutMapping("update")
-    public ResponseEntity<String> update(@RequestBody @Valid Project project) {
+    @PutMapping("update/{id}")
+    public ResponseEntity<String> update(@RequestBody @Valid Project project,@PathVariable int id) {
 
         try {
-            int id = project.getId();
-            Project isThereAny = projectRepository.findById(id).orElse(null);
-            if( isThereAny != null ) {
-                projectRepository.save(project);
+
+            Project updateProject = projectRepository.findById(id).orElse(null);
+            if( updateProject != null ) {
+                updateProject = project;
+                updateProject.setId(id);
+                projectRepository.saveAndFlush(updateProject);
                 return new ResponseEntity<>("Successful", HttpStatus.OK);
             }else{
                 return new ResponseEntity<>("Missing project id!", HttpStatus.BAD_REQUEST);
